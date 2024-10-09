@@ -3,7 +3,9 @@ package main
 import (
 	"github.com/code-chimp/htmx-go-example/internal/models"
 	"html/template"
+	"os"
 	"path/filepath"
+	"strings"
 	"time"
 )
 
@@ -28,33 +30,43 @@ var functions = template.FuncMap{
 func newTemplateCache() (map[string]*template.Template, error) {
 	cache := map[string]*template.Template{}
 
-	pages, err := filepath.Glob("./ui/html/pages/*.gohtml")
+	err := filepath.Walk("./ui/html/pages", func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+		if !info.IsDir() && strings.HasSuffix(path, ".gohtml") {
+			relPath, err := filepath.Rel("./ui/html/pages", path)
+			if err != nil {
+				return err
+			}
+			key := strings.ReplaceAll(relPath, string(filepath.Separator), ".")
+			name := filepath.Base(path)
+
+			// parse base layout to create a new template set
+			ts, err := template.New(name).Funcs(functions).ParseFiles("./ui/html/layouts/base.gohtml")
+			if err != nil {
+				return err
+			}
+
+			// parse all partials and add them to the template set
+			// ts, err = ts.ParseGlob("./ui/html/partials/*.gohtml")
+			// if err != nil {
+			// 	return err
+			// }
+
+			// finally parse the page template and add it to the template set
+			ts, err = ts.ParseFiles(path)
+			if err != nil {
+				return err
+			}
+
+			cache[key] = ts
+		}
+		return nil
+	})
+
 	if err != nil {
 		return nil, err
-	}
-
-	for _, page := range pages {
-		name := filepath.Base(page)
-
-		// parse base template to create a new template set
-		ts, err := template.New(name).Funcs(functions).ParseFiles("./ui/html/base.gohtml")
-		if err != nil {
-			return nil, err
-		}
-
-		// parse all partials and add them to the template set
-		//ts, err = ts.ParseGlob("./ui/html/partials/*.gohtml")
-		//if err != nil {
-		//	return nil, err
-		//}
-
-		// finally parse the page template and add it to the template set
-		ts, err = ts.ParseFiles(page)
-		if err != nil {
-			return nil, err
-		}
-
-		cache[name] = ts
 	}
 
 	return cache, nil

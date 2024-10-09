@@ -23,7 +23,7 @@ func (app *application) getContacts(w http.ResponseWriter, r *http.Request) {
 	data := app.newTemplateData(r)
 	data.Contacts = contacts
 
-	app.render(w, r, http.StatusOK, "contacts.gohtml", data)
+	app.render(w, r, http.StatusOK, "contacts.index.gohtml", data)
 }
 
 // getContact displays a specific contact based on its ID.
@@ -47,5 +47,5 @@ func (app *application) getContact(w http.ResponseWriter, r *http.Request) {
 	data := app.newTemplateData(r)
 	data.Contact = contact
 
-	app.render(w, r, http.StatusOK, "contact.gohtml", data)
+	app.render(w, r, http.StatusOK, "contacts.view.gohtml", data)
 }

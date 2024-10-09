@@ -4,6 +4,24 @@ A [Go](https://go.dev/) web application made in the spirit of the [official Flas
 that accompanies the book [Hypermedia Systems][htmx-book]. You can use this application as a starting point
 to follow along with the book starting at [HTMX Patterns](https://hypermedia.systems/htmx-patterns/).
 
+## Prerequisites
+
+- [Go 1.23](https://go.dev/) or later
+- [Air](https://github.com/cosmtrek/air) for live reloading:
+  ```shell
+  go install github.com/air-verse/air@latest
+  ```
+
+## Development
+
+```shell
+# Start the development server (Linux / MacOS)
+air
+
+# on Windows
+air -c .air-win.toml
+```
+
 ## Note
 
 - This project uses the [Library Manager][libman] [CLI][libman-cli] to manage client-side libraries. You do not need it,
