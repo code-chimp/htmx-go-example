@@ -6,7 +6,7 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"/>
     <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
-    <title>{{template "title" .}} - Contacts App</title>
+    <title>{{block "title" .}}Welcome!{{end}} - Contacts App</title>
     <link rel="stylesheet" href="/static/lib/bootstrap/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="/static/lib/font-awesome/css/all.min.css"/>
     <link rel='stylesheet' href="/static/css/style.css"/>
@@ -14,7 +14,7 @@
     <link rel="icon" href="/static/icon.svg" type="image/svg+xml"/>
     <link rel="apple-touch-icon" href="/static/apple-touch-icon.png" sizes="180x180"/>
     <link rel="manifest" href="/static/site.webmanifest"/>
-    {{template "head" .}}
+    {{block "head" .}}{{end}}
   </head>
   <body class="col-lg-8 mx-auto p-4 py-md-5">
   <header class="d-flex align-items-center pb-3 mb-1 border-bottom">
@@ -28,7 +28,7 @@
   </main>
 
   <script src="/static/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
-  {{template "scripts" .}}
+  {{block "scripts" .}}{{end}}
   </body>
   </html>
 {{end}}

@@ -7,7 +7,6 @@ import (
 	"github.com/go-playground/form/v4"
 	"net/http"
 	"runtime/debug"
-	"time"
 )
 
 // serverError logs the error and sends a generic 500 Internal Server Error response to the user.
@@ -19,6 +18,7 @@ func (app *application) serverError(w http.ResponseWriter, r *http.Request, err 
 	)
 
 	app.logger.Error(err.Error(), "method", method, "uri", uri, "trace", trace)
+
 	http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 }
 
@@ -28,7 +28,7 @@ func (app *application) clientError(w http.ResponseWriter, status int) {
 }
 
 // render is a helper that renders a template with the base template and partials.
-func (app *application) render(w http.ResponseWriter, r *http.Request, status int, name string, data templateData) {
+func (app *application) render(w http.ResponseWriter, r *http.Request, status int, name string, data any) {
 	ts, ok := app.templates[name]
 	if !ok {
 		app.serverError(w, r, fmt.Errorf("the template %s does not exist", name))
@@ -48,13 +48,6 @@ func (app *application) render(w http.ResponseWriter, r *http.Request, status in
 	w.WriteHeader(status)
 
 	buf.WriteTo(w)
-}
-
-// newTemplateData creates a new templateData struct.
-func (app *application) newTemplateData(r *http.Request) templateData {
-	return templateData{
-		CurrentYear: time.Now().Year(),
-	}
 }
 
 func (app *application) decodePostForm(r *http.Request, dst any) error {

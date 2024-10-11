@@ -7,7 +7,7 @@ to follow along with the book starting at [HTMX Patterns](https://hypermedia.sys
 ## Prerequisites
 
 - [Go 1.23](https://go.dev/) or later
-- [Air](https://github.com/cosmtrek/air) for live reloading:
+- [Air](https://github.com/air-verse/air) for live reloading:
   ```shell
   go install github.com/air-verse/air@latest
   ```

@@ -1,0 +1,60 @@
+{{- /* gotype: github.com/code-chimp/htmx-go-example/internal/models.ContactForm */ -}}
+
+{{define "contact-form"}}
+  {{$emailError := index .Errors "Email"}}
+  {{$firstNameError := index .Errors "First"}}
+  {{$lastNameError := index .Errors "Last"}}
+  {{$phoneError := index .Errors "Phone"}}
+  <div class="mb-3">
+    <label for="email" class="form-label">Email</label>
+    <input id="email" name="email"
+           {{if .ID}}form="edit-form"{{end}}
+           type="email"
+           value="{{.Email}}"
+           class="form-control{{if $emailError}} is-invalid{{end}}"
+           {{if $emailError}}aria-describedby="emailStatus"{{end}}
+           placeholder="Email" />
+    {{if $emailError}}
+    <span id="emailStatus" class="invalid-feedback">{{$emailError}}</span>
+    {{end}}
+  </div>
+  <div class="mb-3">
+    <label for="first" class="form-label">First Name</label>
+    <input id="first" name="first"
+           {{if .ID}}form="edit-form"{{end}}
+           type="text"
+           value="{{.First}}"
+           class="form-control{{if $firstNameError}} is-invalid{{end}}"
+           {{if $firstNameError}}aria-describedby="firstStatus"{{end}}
+           placeholder="First Name" />
+    {{if $firstNameError}}
+    <span id="firstStatus" class="invalid-feedback">{{$firstNameError}}</span>
+    {{end}}
+  </div>
+  <div class="mb-3">
+    <label for="last" class="form-label">Last Name</label>
+    <input id="last" name="last"
+           {{if .ID}}form="edit-form"{{end}}
+           type="text"
+           value="{{.Last}}"
+           class="form-control{{if $lastNameError}} is-invalid{{end}}"
+           {{if $lastNameError}}aria-describedby="lastStatus"{{end}}
+           placeholder="Last Name" />
+    {{if $lastNameError}}
+    <span id="lastStatus" class="invalid-feedback">{{$lastNameError}}</span>
+    {{end}}
+  </div>
+  <div class="mb-3">
+    <label for="phone" class="form-label">Phone</label>
+    <input id="phone" name="phone"
+           {{if .ID}}form="edit-form"{{end}}
+           type="tel"
+           value="{{.Phone}}"
+           class="form-control{{if $phoneError}} is-invalid{{end}}"
+           {{if $phoneError}}aria-describedby="phoneStatus"{{end}}
+           placeholder="###-###-####" />
+    {{if $phoneError}}
+    <span id="phoneStatus" class="invalid-feedback">{{$phoneError}}</span>
+    {{end}}
+  </div>
+{{end}}

@@ -1,0 +1,24 @@
+{{- /* gotype: github.com/code-chimp/htmx-go-example/internal/models.ContactForm */ -}}
+{{define "title"}}Create Contact{{end}}
+
+{{define "body"}}
+  <h3>New Contact</h3>
+  <div class="row justify-content-center">
+    <div class="col-sm-12 col-md-6">
+      <form action="/contacts/new" method="post">
+        {{template "contact-form" .}}
+        <button class="btn btn-success">
+          <i class="fa fa-floppy-disk"></i>
+          Save
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <p>
+    <a href="/contacts" class="btn btn-primary" role="button">
+      <i class="fa fa-home"></i>
+      Home
+    </a>
+  </p>
+{{end}}

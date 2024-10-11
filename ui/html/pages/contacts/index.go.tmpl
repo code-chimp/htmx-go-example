@@ -1,3 +1,4 @@
+{{- /* gotype: github.com/code-chimp/htmx-go-example/internal/models.ContactsIndexVM */ -}}
 {{define "title"}}Contacts{{end}}
 
 {{define "body"}}
@@ -15,7 +16,7 @@
                  id="search" name="q"
                  aria-label="Search"
                  class="form-control"
-                 value=""
+                 value="{{.Query}}"
                  placeholder="Search Term"/>
         </div>
         <div class="col-12">
@@ -41,10 +42,10 @@
       <tbody>
       {{range .Contacts}}
         <tr>
-          <td>{{.First}}</td>
-          <td>{{.Last}}</td>
-          <td>{{.Phone}}</td>
-          <td>{{.Email}}</td>
+          <td>{{ .First }}</td>
+          <td>{{ .Last }}</td>
+          <td>{{ .Phone }}</td>
+          <td>{{ .Email }}</td>
           <td class="d-flex justify-content-end">
             <a class="btn btn-warning"
                role="button"
@@ -70,6 +71,3 @@
     </table>
   </div>
 {{end}}
-
-{{define "head"}}{{end}}
-{{define "scripts"}}{{end}}

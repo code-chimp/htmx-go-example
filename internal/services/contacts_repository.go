@@ -1,24 +1,16 @@
-package models
+package services
 
 import (
 	"encoding/json"
 	"errors"
+	"github.com/code-chimp/htmx-go-example/internal/models"
 	"os"
 	"strings"
 )
 
-// Contact represents a contact persisted to storage.
-type Contact struct {
-	ID    int    `json:"id"`
-	First string `json:"first"`
-	Last  string `json:"last"`
-	Phone string `json:"phone"`
-	Email string `json:"email"`
-}
-
 // ContactRepository manages a collection of contacts.
 type ContactRepository struct {
-	contacts []*Contact
+	contacts []*models.Contact
 }
 
 // NewRepository creates a new ContactRepository from the data in the contacts.json file.
@@ -31,7 +23,7 @@ func NewRepository() (*ContactRepository, error) {
 	}
 	defer file.Close()
 
-	var contacts []*Contact
+	var contacts []*models.Contact
 	if err := json.NewDecoder(file).Decode(&contacts); err != nil {
 		return nil, err
 	}
@@ -63,7 +55,7 @@ func (r *ContactRepository) getNextID() int {
 }
 
 // Get returns a contact by ID if found, or an error if not found.
-func (r *ContactRepository) Get(id int) (*Contact, error) {
+func (r *ContactRepository) Get(id int) (*models.Contact, error) {
 	for _, c := range r.contacts {
 		if c.ID == id {
 			return c, nil
@@ -74,13 +66,13 @@ func (r *ContactRepository) Get(id int) (*Contact, error) {
 
 // GetAll returns all contacts in the repository. If a query string is provided, it filters the contacts
 // whose Email, First, or Last includes the query string (case insensitive).
-func (r *ContactRepository) GetAll(query ...string) ([]*Contact, error) {
+func (r *ContactRepository) GetAll(query ...string) ([]*models.Contact, error) {
 	if len(query) == 0 || query[0] == "" {
 		return r.contacts, nil
 	}
 
 	q := strings.ToLower(query[0])
-	var filteredContacts []*Contact
+	var filteredContacts []*models.Contact
 
 	for _, c := range r.contacts {
 		if strings.Contains(strings.ToLower(c.Email), q) ||
@@ -96,20 +88,21 @@ func (r *ContactRepository) GetAll(query ...string) ([]*Contact, error) {
 
 // Insert adds a new contact to the repository and persists the change to the contacts.json file.
 // Returns the inserted contact and an error if the file cannot be saved.
-func (r *ContactRepository) Insert(contact *Contact) (*Contact, error) {
+func (r *ContactRepository) Insert(contact *models.Contact) error {
 	contact.ID = r.getNextID()
 	r.contacts = append(r.contacts, contact)
 
 	err := r.saveToFile()
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return contact, nil
+
+	return nil
 }
 
 // Update modifies an existing contact in the repository and persists the change to the contacts.json file.
 // Returns an error if the contact is not found or the file cannot be saved.
-func (r *ContactRepository) Update(contact *Contact) error {
+func (r *ContactRepository) Update(contact *models.Contact) error {
 	for i, c := range r.contacts {
 		if c.ID == contact.ID {
 			r.contacts[i] = contact
@@ -129,4 +122,14 @@ func (r *ContactRepository) Delete(id int) error {
 		}
 	}
 	return errors.New("contact not found")
+}
+
+// EmailUnique checks if a contact with the same email address already exists in the repository.
+func (r *ContactRepository) EmailUnique(email string, id int) bool {
+	for _, c := range r.contacts {
+		if c.Email == email && c.ID != id {
+			return false
+		}
+	}
+	return true
 }
