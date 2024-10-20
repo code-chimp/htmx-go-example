@@ -1,0 +1,15 @@
+{
+  "name": "htmx-go-example",
+  "version": "1.0.0",
+  "description": "A [Go](https://go.dev/) web application made in the spirit of the [official Flask example][htmx-proj] application that accompanies the book [Hypermedia Systems][htmx-book]. You can use this application as a starting point to follow along with the book starting at [HTMX Patterns](https://hypermedia.systems/htmx-patterns/).",
+  "main": "tailwind.config.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Tim Goshinski <tim@code-chimp.com>",
+  "license": "BSD-3-Clause",
+  "devDependencies": {
+    "tailwindcss": "^3.4.14"
+  }
+}

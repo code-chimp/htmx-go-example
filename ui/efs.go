@@ -2,7 +2,7 @@ package ui
 
 import "embed"
 
-// Files is an embedded filesystem that includes the "html" and "static" directories.
+// Files is an embedded filesystem that includes the "html" templates.
 //
-//go:embed "html" "static"
+//go:embed "html"
 var Files embed.FS

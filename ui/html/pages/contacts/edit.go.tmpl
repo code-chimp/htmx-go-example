@@ -5,22 +5,30 @@
   <form id="edit-form" action="/contacts/{{ .ID }}/edit" method="post"></form>
   <form id="delete-form" action="/contacts/{{ .ID }}/delete" method="post"></form>
   <h3>Update Contact</h3>
-  <div class="row justify-content-center">
-    <div class="col-sm-12 col-md-6">
+  <div class="row justify-center">
+    <div class="sm:w-full md:w-1/2">
       {{template "contact-form" .}}
-      <button type="submit" form="edit-form" class="btn btn-success">
-        <i class="fa fa-floppy-disk"></i>
-        Save
-      </button>
-      <button type="submit" form="delete-form" class="btn btn-danger float-end">
-        <i class="fa fa-trash"></i>
-        Delete
-      </button>
+      <div class="row md:justify-between">
+        <button type="submit"
+                class="btn btn-success"
+                form="edit-form">
+          <i class="fa fa-floppy-disk"></i>
+          Save
+        </button>
+        <button type="submit"
+                class="btn btn-danger justify-self-end"
+                form="delete-form">
+          <i class="fa fa-trash"></i>
+          Delete
+        </button>
+      </div>
     </div>
   </div>
 
   <p>
-    <a href="/contacts" class="btn btn-primary" role="button">
+    <a href="/contacts"
+       role="button"
+       class="btn btn-primary">
       <i class="fa fa-home"></i>
       Home
     </a>

@@ -15,11 +15,27 @@ to follow along with the book starting at [HTMX Patterns](https://hypermedia.sys
 ## Development
 
 ```shell
-# Start the development server (Linux / MacOS)
-air
+# Start the Tailwind CSS build process
+make watch-css
 
-# on Windows
-air -c .air-win.toml
+# In a separate terminal start the development server (Linux / MacOS)
+make dev
+```
+
+## Tailwind CSS Development Notes
+
+You can develop and build everything using only the TailwindCSS CLI (installed via `make tailwindcss`) but you likely will
+not have Tailwind Intellisense in your IDE. If you need Intellisense installing the NodeJS version should enable it - just 
+run `npm install` in the project root and you should be good to go.
+
+
+## Production
+
+Everything needed to run the application is in the `dist` directory. You can serve the files using any web server or reverse proxy.
+
+```shell
+# Build the application
+make build
 ```
 
 ## Note

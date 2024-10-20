@@ -5,7 +5,7 @@
   {{$firstNameError := index .Errors "First"}}
   {{$lastNameError := index .Errors "Last"}}
   {{$phoneError := index .Errors "Phone"}}
-  <div class="mb-3">
+  <div class="mb-4">
     <label for="email" class="form-label">Email</label>
     <input id="email" name="email"
            {{if .ID}}form="edit-form"{{end}}
@@ -18,7 +18,7 @@
     <span id="emailStatus" class="invalid-feedback">{{$emailError}}</span>
     {{end}}
   </div>
-  <div class="mb-3">
+  <div class="mb-4">
     <label for="first" class="form-label">First Name</label>
     <input id="first" name="first"
            {{if .ID}}form="edit-form"{{end}}
@@ -31,7 +31,7 @@
     <span id="firstStatus" class="invalid-feedback">{{$firstNameError}}</span>
     {{end}}
   </div>
-  <div class="mb-3">
+  <div class="mb-4">
     <label for="last" class="form-label">Last Name</label>
     <input id="last" name="last"
            {{if .ID}}form="edit-form"{{end}}
@@ -44,7 +44,7 @@
     <span id="lastStatus" class="invalid-feedback">{{$lastNameError}}</span>
     {{end}}
   </div>
-  <div class="mb-3">
+  <div class="mb-4">
     <label for="phone" class="form-label">Phone</label>
     <input id="phone" name="phone"
            {{if .ID}}form="edit-form"{{end}}

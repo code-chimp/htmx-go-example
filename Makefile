@@ -1,56 +1,85 @@
+# windows/x64 fallback because that is my only box that doesn't have uname
+OS := $(shell uname -s 2>/dev/null || echo windows)
+ARCH := $(shell uname -m 2>/dev/null || echo x64)
+
+# account for windows with git shell extensions
+ifeq ($(findstring MSYS_NT,$(OS)),MSYS_NT)
+	OS := windows
+endif
+
+ifneq ($(OS),windows)
+	OS := $(shell echo $(OS) | tr '[:upper:]' '[:lower:]' | sed 's/darwin/macos/')
+	ARCH := $(shell echo $(ARCH) | tr '[:upper:]' '[:lower:]' | sed 's/x86_64/x64/')
+endif
+
+TAILWINDCSS_PKG := $(OS)-$(ARCH)
+ifeq ($(OS),windows)
+	TAILWINDCSS_PKG := $(TAILWINDCSS_PKG).exe
+endif
+
 help:
 	@echo "The following commands are available:"
-	@echo "  run:             Run the web application using the Go command. (any)"
-	@echo "  dev:             Run the web application in development mode using the Air tool for live reloading. (linux/mac)"
-	@echo "  dev/win:         Run the web application in development mode on Windows using the Air tool for live reloading. (windows)"
-	@echo "  build:           Build the web application and output the binary to the 'bin' directory. (linux)"
-	@echo "  build/arm:       Build the web application for Linux running on an ARM architecture and output the binary to the 'bin' directory. (linux)"
-	@echo "  build/mac:       Build the web application for Apple Silicon chips and output the binary to the 'bin' directory. (mac)"
-	@echo "  build/mac/intel: Build the web application for Intel-based Macs and output the binary to the 'bin' directory. (mac)"
-	@echo "  build/win:       Build the web application for Windows (amd64 architecture) and output the binary to the 'bin' directory. (windows)"
+	@echo "  dev:          Run the web application in development mode using the Air tool for live reloading"
+	@echo "  watch-css:    Watch CSS and template files for changes and rebuild using Tailwind CSS CLI"
+	@echo "  build:        Build the web application for deployment and output the binary and required assets to the 'dist' directory"
+	@echo "  build-css:    Build the production CSS using Tailwind CSS CLI"
+	@echo "  tailwindcss:  Download the Tailwind CSS CLI based on the OS and architecture"
 
-# run: Run the web application using the Go command.
-run:
-	go run ./cmd/web
+# Download the Tailwind CSS CLI based on the OS and architecture
+tailwindcss:
+	@echo "Downloading Tailwind CSS CLI..."
+ifeq ($(OS),windows)
+	@powershell -Command "Invoke-WebRequest -Uri https://github.com/tailwindlabs/tailwindcss/releases/latest/download/tailwindcss-$(TAILWINDCSS_PKG) -OutFile tailwindcss.exe"
+else
+	@curl -sLO https://github.com/tailwindlabs/tailwindcss/releases/latest/download/tailwindcss-$(TAILWINDCSS_PKG)
+	@mv tailwindcss-$(TAILWINDCSS_PKG) tailwindcss
+	@chmod +x tailwindcss
+endif
 
-# dev: Run the web application in development mode using the Air tool for live reloading
-dev:
-	air -c .air.toml
+# Build the production CSS using Tailwind CSS CLI
+.PHONY: build-css
+build-css: tailwindcss
+	@echo "Building production CSS..."
+	@./tailwindcss -i ./ui/styles/tailwind.css -o ./ui/static/css/style.css --minify
 
-# dev/win: Run the web application in development mode on Windows using the Air tool for live reloading
-dev/win:
-	air -c .air-win.toml
+# Watch CSS files for changes and rebuild using Tailwind CSS CLI
+.PHONY: watch-css
+watch-css: tailwindcss
+	@echo "Watching CSS files for changes..."
+	@./tailwindcss -i ./ui/styles/tailwind.css -o ./ui/static/css/style.css --watch
 
-# ======================
-# Build
-# ======================
+# Clean the 'dist' directory
+.PHONY: clean
+clean:
+	@echo "Cleaning the dist directory..."
+ifeq ($(OS),windows)
+	@powershell -Command "Remove-Item -Recurse -Force dist; New-Item -ItemType Directory -Path dist/ui"
+	@powershell -Command "Copy-Item -Recurse -Force ui/static dist/static"
+	@powershell -Command "Copy-Item -Recurse -Force data dist/data"
+else
+	@rm -rf dist
+	@mkdir -p dist/ui
+endif
 
-# build: Build the web application and output the binary to the 'bin' directory.
+# Build the web application and output the binary to the 'dist' directory
 .PHONY: build
-build:
+build: clean build-css
 	@echo "Building web application..."
-	GOOS=linux GOARCH=amd64 go build -ldflags="-s" -o=./bin/linux_amd64/web ./cmd/web
+ifeq ($(OS),windows)
+	@set GOOS=linux && set GOARCH=amd64 && go build -ldflags="-s" -o=./dist/web ./cmd/web
+else
+	@GOOS=linux GOARCH=amd64 go build -ldflags="-s" -o=./dist/web ./cmd/web
+	@cp -r ui/static dist/ui
+	@cp -r data dist/data
+endif
 
-# build/arm: Build the web application for Linux running on an ARM architecture and output the binary to the 'bin' directory.
-.PHONY: build/arm
-build/arm:
-	@echo "Building web application for Linux running on an ARM architecture..."
-	GOOS=linux GOARCH=arm64 go build -ldflags="-s" -o=./bin/linux_arm64/web ./cmd/web
-
-# build/mac: Build the web application for Apple Silicon chips and output the binary to the 'bin' directory.
-.PHONY: build/mac
-build/mac:
-	@echo "Building web application for Apple Silicon..."
-	GOOS=darwin GOARCH=arm64 go build -ldflags="-s" -o=./bin/darwin_arm64/web ./cmd/web
-
-# build/mac/intel: Build the web application for Intel-based Macs and output the binary to the 'bin' directory.
-.PHONY: build/mac/intel
-build/mac/intel:
-	@echo "Building web application for Apple Intel..."
-	GOOS=darwin GOARCH=amd64 go build -ldflags="-s" -o=./bin/darwin_amd64/web ./cmd/web
-
-# build/win: Build the web application for Windows (amd64 architecture) and output the binary to the 'bin' directory.
-.PHONY: build/win
-build/win:
-	@echo "Building web application for Windows..."
-	GOOS=windows GOARCH=amd64 go build -ldflags="-s" -o=./bin/windows_amd64/web.exe ./cmd/web
+# Run the web application in development mode using the Air tool for live reloading
+.PHONY: dev
+dev:
+	@echo "Running the web application in development mode..."
+	@echo "  NOTE: you should already be running 'make watch-css' in a separate terminal"
+ifeq ($(OS),windows)
+	@air -c .\.air-win.toml
+else
+	@air -c .air.toml
+endif

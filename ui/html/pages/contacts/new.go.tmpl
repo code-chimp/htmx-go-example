@@ -3,11 +3,11 @@
 
 {{define "body"}}
   <h3>New Contact</h3>
-  <div class="row justify-content-center">
-    <div class="col-sm-12 col-md-6">
+  <div class="row justify-center">
+    <div class="w-full lg:w-1/2">
       <form action="/contacts/new" method="post">
         {{template "contact-form" .}}
-        <button class="btn btn-success">
+        <button class="btn btn-success float-right lg:float-none">
           <i class="fa fa-floppy-disk"></i>
           Save
         </button>
@@ -16,7 +16,9 @@
   </div>
 
   <p>
-    <a href="/contacts" class="btn btn-primary" role="button">
+    <a href="/contacts"
+       role="button"
+       class="btn btn-primary">
       <i class="fa fa-home"></i>
       Home
     </a>

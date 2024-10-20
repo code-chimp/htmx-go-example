@@ -1,7 +1,6 @@
 package main
 
 import (
-	"github.com/code-chimp/htmx-go-example/ui"
 	"github.com/justinas/alice"
 	"net/http"
 )
@@ -11,7 +10,8 @@ func (app *application) routes() http.Handler {
 
 	dynamic := alice.New()
 
-	mux.Handle("GET /static/", http.FileServerFS(ui.Files))
+	fileServer := http.FileServer(http.Dir("./ui/static/"))
+	mux.Handle("GET /static/", http.StripPrefix("/static", fileServer))
 
 	mux.Handle("GET /{$}", dynamic.ThenFunc(app.getHome))
 	mux.Handle("GET /contacts", dynamic.ThenFunc(app.getContacts))
