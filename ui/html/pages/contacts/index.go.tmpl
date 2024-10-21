@@ -13,7 +13,7 @@
       <form action="/contacts" method="get" class="row items-center">
         <input type="search"
                id="search" name="q"
-               class="mr-0.5"
+               class="border rounded mr-0.5"
                aria-label="Search"
                value="{{.Query}}"
                placeholder="Search Term"/>
@@ -25,15 +25,15 @@
       </form>
     </div>
   </div>
-  <div class="row mb-1">
+  <div class="row mb-4">
     <table class="table-auto border border-collapse border-spacing-0.5 indent-1 w-full p-1">
       <thead>
-      <tr class="border">
-        <th scope="col" class="py-2">First Name</th>
-        <th scope="col" class="py-2">Last Name</th>
-        <th scope="col" class="py-2">Phone</th>
-        <th scope="col" class="py-2">Email</th>
-        <th scope="col" class="py-2"></th>
+      <tr class="[&>*]:border [&>*]:border-gray-400 [&>*]:p-2">
+        <th scope="col">First Name</th>
+        <th scope="col">Last Name</th>
+        <th scope="col">Phone</th>
+        <th scope="col">Email</th>
+        <th scope="col"></th>
       </tr>
       </thead>
       <tbody class="[&>*:nth-child(odd)]:bg-gray-100 hover:[&>*]:bg-gray-300">

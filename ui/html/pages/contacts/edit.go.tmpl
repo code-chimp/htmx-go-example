@@ -6,7 +6,7 @@
   <form id="delete-form" action="/contacts/{{ .ID }}/delete" method="post"></form>
   <h3>Update Contact</h3>
   <div class="row justify-center">
-    <div class="sm:w-full md:w-1/2">
+    <div class="w-full md:w-1/2">
       {{template "contact-form" .}}
       <div class="row md:justify-between">
         <button type="submit"
